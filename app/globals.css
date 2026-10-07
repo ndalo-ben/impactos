@@ -1,26 +1,264 @@
 @import "tailwindcss";
 
+/*
+ * ImpactOS design foundation — calm, trustworthy, intelligence-first.
+ *
+ * Tailwind v4 is CSS-first: this file IS the config (no tailwind.config.js).
+ * Raw values live as plain CSS custom properties on :root / .dark, and
+ * `@theme inline` re-exports them as design tokens so they generate real
+ * utilities: bg-background, text-muted-foreground, border-border,
+ * bg-primary, bg-sidebar, shadow-card, animate-rise, ...
+ *
+ * Two tiers for semantic colour on purpose:
+ *   --danger         the FILL (buttons, dots, bars) — pairs with --danger-foreground
+ *   --danger-text    the INK (badge/label text on a tinted surface), tuned for
+ *                    >= 4.5:1 contrast against --background in each theme.
+ */
+
+/* Class-based dark mode (a tiny boot script in layout.tsx sets `.dark`). */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  /* Surfaces */
+  --background: oklch(0.996 0.002 265);
+  --foreground: oklch(0.213 0.028 265);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.213 0.028 265);
+  --muted: oklch(0.968 0.006 265);
+  --muted-foreground: oklch(0.532 0.021 265);
+
+  /* Lines & focus */
+  --border: oklch(0.918 0.008 265);
+  --input: oklch(0.9 0.009 265);
+  --ring: oklch(0.55 0.15 268);
+
+  /* Brand */
+  --primary: oklch(0.52 0.165 268);
+  --primary-foreground: oklch(0.99 0.005 265);
+  --accent: oklch(0.63 0.13 205);
+  --accent-foreground: oklch(0.99 0.005 265);
+
+  /* Semantic states — fills */
+  --success: oklch(0.6 0.12 158);
+  --warning: oklch(0.82 0.14 82);
+  --danger: oklch(0.58 0.19 27);
+  --info: oklch(0.62 0.12 245);
+
+  /* Ink that sits ON a semantic fill */
+  --success-foreground: oklch(0.99 0.005 158);
+  --warning-foreground: oklch(0.28 0.05 78);
+  --danger-foreground: oklch(0.99 0.005 27);
+  --info-foreground: oklch(0.99 0.005 245);
+
+  /* Ink for coloured TEXT on a plain (background/card) surface */
+  --primary-text: oklch(0.46 0.16 268);
+  --accent-text: oklch(0.47 0.11 205);
+  --success-text: oklch(0.45 0.11 158);
+  --warning-text: oklch(0.49 0.12 70);
+  --danger-text: oklch(0.48 0.19 27);
+  --info-text: oklch(0.49 0.13 250);
+
+  /* The application shell rail */
+  --sidebar: oklch(0.985 0.004 265);
+  --sidebar-foreground: oklch(0.268 0.026 265);
+  --sidebar-muted: oklch(0.55 0.021 265);
+  --sidebar-accent: oklch(0.955 0.014 268);
+  --sidebar-accent-foreground: oklch(0.42 0.15 268);
+  --sidebar-border: oklch(0.914 0.008 265);
+
+  /* Drawer scrim */
+  --overlay: oklch(0.21 0.03 265 / 0.45);
+
+  /* Geometry */
+  --radius: 0.75rem;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --background: oklch(0.172 0.022 265);
+  --foreground: oklch(0.955 0.008 265);
+  --card: oklch(0.212 0.024 265);
+  --card-foreground: oklch(0.955 0.008 265);
+  --muted: oklch(0.252 0.022 265);
+  --muted-foreground: oklch(0.697 0.02 265);
+
+  --border: oklch(0.305 0.022 265);
+  --input: oklch(0.33 0.022 265);
+  --ring: oklch(0.68 0.15 268);
+
+  --primary: oklch(0.68 0.155 268);
+  --primary-foreground: oklch(0.152 0.025 265);
+  --accent: oklch(0.72 0.12 205);
+  --accent-foreground: oklch(0.152 0.025 265);
+
+  --success: oklch(0.64 0.12 158);
+  --warning: oklch(0.8 0.14 82);
+  --danger: oklch(0.6 0.18 27);
+  --info: oklch(0.66 0.12 245);
+
+  --success-foreground: oklch(0.16 0.03 158);
+  --warning-foreground: oklch(0.2 0.04 78);
+  --danger-foreground: oklch(0.99 0.005 27);
+  --info-foreground: oklch(0.16 0.03 245);
+
+  --primary-text: oklch(0.82 0.11 268);
+  --accent-text: oklch(0.82 0.1 205);
+  --success-text: oklch(0.8 0.12 158);
+  --warning-text: oklch(0.85 0.13 82);
+  --danger-text: oklch(0.78 0.14 27);
+  --info-text: oklch(0.8 0.1 245);
+
+  --sidebar: oklch(0.193 0.023 265);
+  --sidebar-foreground: oklch(0.94 0.008 265);
+  --sidebar-muted: oklch(0.68 0.02 265);
+  --sidebar-accent: oklch(0.268 0.03 268);
+  --sidebar-accent-foreground: oklch(0.86 0.11 268);
+  --sidebar-border: oklch(0.29 0.022 265);
+
+  --overlay: oklch(0.09 0.02 265 / 0.62);
 }
 
 @theme inline {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  /* Colors — surfaces */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-overlay: var(--overlay);
+
+  /* Colors — lines & focus */
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Colors — brand */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  /* Colors — semantic fills + their inks */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  /* Colors — readable coloured text on plain surfaces */
+  --color-primary-text: var(--primary-text);
+  --color-accent-text: var(--accent-text);
+  --color-success-text: var(--success-text);
+  --color-warning-text: var(--warning-text);
+  --color-danger-text: var(--danger-text);
+  --color-info-text: var(--info-text);
+
+  /* Colors — application shell */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+
+  /* Radii */
+  --radius-sm: calc(var(--radius) - 0.375rem);
+  --radius-md: calc(var(--radius) - 0.25rem);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 0.25rem);
+
+  /* Elevation — soft, low-contrast, never loud */
+  --shadow-card: 0 1px 2px 0 oklch(0.21 0.03 265 / 0.04),
+    0 1px 3px 0 oklch(0.21 0.03 265 / 0.06);
+  --shadow-raised: 0 6px 16px -4px oklch(0.21 0.03 265 / 0.1),
+    0 2px 6px -2px oklch(0.21 0.03 265 / 0.06);
+  --shadow-popover: 0 12px 32px -8px oklch(0.21 0.03 265 / 0.18),
+    0 4px 12px -4px oklch(0.21 0.03 265 / 0.08);
+
+  /* Motion — short, eased, never bouncy */
+  --animate-fade-in: fade-in 0.18s ease-out both;
+  --animate-rise: rise 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-slide-in-left: slide-in-left 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-primary) 22%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  /* Keep numeric intelligence readable: metrics and tables align by digit. */
+  table,
+  [data-numeric] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
